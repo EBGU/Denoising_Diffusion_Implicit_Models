@@ -4,9 +4,9 @@ import torch
 import torch.nn as nn
 import warnings
 import os,sys
-get_path = os.path.dirname(__file__)
+get_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(get_path)
-current_path = os.path.dirname(__file__).split('/')
+current_path = os.path.dirname(os.path.abspath(__file__)).split('/')
 
 def _no_grad_trunc_normal_(tensor, mean, std, a, b):
     # Cut & paste from PyTorch official master until it's in a few official releases - RW
@@ -259,11 +259,11 @@ if __name__ == "__main__":
     from mpl_toolkits.axes_grid1 import ImageGrid
     import torchvision.transforms.functional as transF
     device = torch.device('cuda')
-    model = DiffusionVisionTransformer(img_size=[64,64],total_steps=2000,patch_size=8,embed_dim=384,depth=7,num_heads=12) #miniImageNet
-    state = torch.load(get_path+"/Saved_Models/miniImageNet.pkl")
+    # model = DiffusionVisionTransformer(img_size=[64,64],total_steps=2000,patch_size=8,embed_dim=384,depth=7,num_heads=12) #miniImageNet
+    # state = torch.load(get_path+"/Saved_Models/miniImageNet.pkl")
 
-    # model = DiffusionVisionTransformer(img_size=[64,64],total_steps=2000,patch_size=4,embed_dim=256,depth=6,num_heads=4) #oxford flower
-    # state = torch.load(get_path+"/Saved_Models/OxfordFlower.pkl")
+    model = DiffusionVisionTransformer(img_size=[64,64],total_steps=2000,patch_size=4,embed_dim=256,depth=6,num_heads=4) #oxford flower
+    state = torch.load(get_path+"/Saved_Models/OxfordFlower.pkl")
    
     model.load_state_dict(state,strict=True)
     model.to(device)
