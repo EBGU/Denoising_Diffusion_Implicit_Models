@@ -1,0 +1,15 @@
+initializing : 'vit_tiny.pkl' #
+resume: 'none'
+AMP : False 
+framework : 'vit_tiny_diffusion'
+num_gpus : 1
+batch_size : 128
+epoch : [0,100]
+base_lr : 0.005 # per 512
+dataStorage : ["/mnt/d/Datasets/MiniImageNet/train","/mnt/d/Datasets/MiniImageNet/val"]
+image_size : [64,64]
+diff_step : 2000
+patch_size : 8
+embed_dim : 384
+depth : 7
+head : 12
