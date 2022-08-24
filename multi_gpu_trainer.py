@@ -1,5 +1,5 @@
 import os,sys
-get_path = os.path.dirname(__file__)
+get_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(get_path)
 from diffusion_loader import DiffusionDataset
 from ViT import DiffusionVisionTransformer
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     import os,sys
     import yaml
     import shutil
-    current_path = os.path.dirname(__file__)
+    current_path = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(current_path)
     ExpName = sys.argv[1]
     #ExpName = '20220822'
