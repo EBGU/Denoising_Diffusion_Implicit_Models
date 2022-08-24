@@ -1,5 +1,5 @@
 # Denoising_Diffusion_Implicit_Models
-A replication of Denoising Diffusion Implicit Models paper with PyTorch and ViT.
+A replication of Denoising Diffusion Implicit Models paper with PyTorch and [ViT](https://github.com/facebookresearch/dino).
 
 ![img](https://github.com/EBGU/Denoising_Diffusion_Implicit_Models/blob/main/Saved_Models/samples_flower.png)
 
