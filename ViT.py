@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import warnings
 import os,sys
+
 get_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(get_path)
 current_path = os.path.dirname(os.path.abspath(__file__)).split('/')
@@ -254,7 +255,18 @@ class DiffusionVisionTransformer(nn.Module):
             print(f"\rnoise level {t}  {time.time()-start_time:.2f}",end='')
         return img
             
-if __name__ == "__main__":
+import click
+
+@click.command()
+@click.option("--sample_n", default=256, help="Number of samples you'll get.")
+@click.option("--acc_k", default=1, help="Number of step jumped during sampling.")
+def main(sample_n, acc_k):
+    """main entrance
+    Arguments:
+    ---------
+    sample_n : 128
+    step_k : 10
+    """
     import matplotlib.pyplot as plt
     from mpl_toolkits.axes_grid1 import ImageGrid
     import torchvision.transforms.functional as transF
@@ -267,7 +279,7 @@ if __name__ == "__main__":
    
     model.load_state_dict(state,strict=True)
     model.to(device)
-
+    
     N = 6
     img = model.diffusion_sequence(device,100,N=N)
     fig = plt.figure(figsize=(len(img),1.5*N),dpi=300)
@@ -279,9 +291,9 @@ if __name__ == "__main__":
     for ax, im in zip(grid,img):
         # Iterating over the grid returns the Axes.
         ax.imshow(transF.to_pil_image(im))
-    plt.savefig(get_path+"/Saved_Models/denoise_sequence.png",bbox_inches='tight')
+    plt.savefig(get_next_path(get_path+"/Saved_Models/denoise_sequence.png"),bbox_inches='tight')
 
-    img = model.sampler(device,1,256)
+    img = model.sampler(device,acc_k,sample_n)
     fig = plt.figure(figsize=(16., 16.))
     grid = ImageGrid(fig, 111,  # similar to subplot(111)
                     nrows_ncols=(16, 16),  # creates 2x2 grid of axes
@@ -290,4 +302,15 @@ if __name__ == "__main__":
     for ax, im in zip(grid,img):
         # Iterating over the grid returns the Axes.
         ax.imshow(transF.to_pil_image(im))
-    plt.savefig(get_path+"/Saved_Models/samples.png",bbox_inches='tight')
+    plt.savefig(get_next_path(get_path+"/Saved_Models/samples.png"),bbox_inches='tight')
+
+def get_next_path(pth):
+    prefix_path, ext = os.path.splitext(pth)
+    i = 1
+    file_path = pth
+    while os.path.isfile(file_path):
+        file_path = f"{prefix_path}_{str(i)}{ext}"
+    return file_path
+        
+if __name__ == "__main__":
+    main()
