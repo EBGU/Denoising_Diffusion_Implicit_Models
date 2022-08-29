@@ -25,6 +25,6 @@ The result should looks like the welcoming images.
 
 If you want my pretrained weights for miniImageNet, please leave you email address. Enjoy!
 
-# 20220829
-Upload checkpoints for high-resolution images(200*200), and add new code for zero-shot draft-to-drawings.
+### 20220829
+Upload checkpoints for high-resolution images(200*200), and add new code for [zero-shot draft-to-drawings](https://github.com/EBGU/Denoising_Diffusion_Implicit_Models/blob/main/ViT_draft2drawing.py).
 ![img](https://github.com/EBGU/Denoising_Diffusion_Implicit_Models/blob/main/Saved_Models/d2d_sample.jpg)
