@@ -255,7 +255,37 @@ class DiffusionVisionTransformer(nn.Module):
             print(f"\rnoise level {t}  {time.time()-start_time:.2f}",end='')
         img = (denoised_img.cpu()+1)/2
         return img
-
+    
+    @torch.no_grad()
+    def cold_sampler(self,device,k=10,N=128):
+        import time
+        import copy
+        start_time = time.time()  
+        noisy_img = torch.normal(0,1,(N,3,self.img_size[0],self.img_size[1]))    
+        noisy_img = noisy_img.to(device)
+        noise = copy.deepcopy(noisy_img)
+        # eps = np.linspace(1,0,self.total_steps//k)[1:-1]
+        # steps_t = list(eps**0.5*self.total_steps)
+        # # steps_tk = steps_t[1:]+[0]
+        # for t,tk in zip(steps_t,steps_tk):
+        for t in range(self.total_steps-1,0,-k):
+            steps = torch.tensor([int(t)]*N,device = device).long()
+            denoised_img = self.forward(noisy_img,steps)
+            denoised_img = torch.clamp(denoised_img,-1,1)
+            #DDIM
+            # alpha_tk = 1 - math.sqrt(int(tk)/self.total_steps)#+1e-5
+            # alpha_t = 1 - math.sqrt(int(t)/self.total_steps)+1e-5
+            alpha_tk = 1 - math.sqrt((t+1-k)/self.total_steps)#+1e-5
+            alpha_t = 1 - math.sqrt((t+1)/self.total_steps)+1e-5
+            pred_noisy_t = math.sqrt(alpha_t)*denoised_img+math.sqrt(1-alpha_t)*noise
+            pred_noisy_tk = math.sqrt(alpha_tk)*denoised_img+math.sqrt(1-alpha_tk)*noise
+            noisy_img = noisy_img-pred_noisy_t+pred_noisy_tk
+            # noise = (noisy_img - math.sqrt(alpha_t)*denoised_img)/math.sqrt(1-alpha_t)
+            # noisy_img = math.sqrt(alpha_tk)*(noisy_img/math.sqrt(alpha_t) + (math.sqrt((1-alpha_tk)/alpha_tk) - math.sqrt((1-alpha_t)/alpha_t))*noise)
+            print(f"\rnoise level {int(t)}  {time.time()-start_time:.2f}",end='')
+        img = (denoised_img.cpu()+1)/2
+        return img
+    
     @torch.no_grad()
     def diffusion_sequence(self,device,k=100,N=5):
         import time
